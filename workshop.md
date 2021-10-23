@@ -2,7 +2,6 @@
 
 <br>
 
-
 # Global Hacks - Ploomber Workshop Material
 
 Authors: [Eduardo Blancas](https://twitter.com/edublancas) and [Ido Michael](https://www.linkedin.com/in/ido-michael/)
@@ -12,9 +11,8 @@ This workshop demonstrates how to develop reproducible pipelines using [Ploomber
 To start, [click here](https://mybinder.org/v2/gh/edublancas/ploomber-workshop/main?urlpath=lab/tree/index.ipynb) or on the button below:
 
 <p align="center">
-  <a href="https://mybinder.org/v2/gh/edublancas/ploomber-workshop/main?urlpath=lab/tree/index.ipynb"> <img src="_static/open-jupyterlab.svg" alt="Open JupyerLab"> </a>
+  <a href="https://mybinder.org/v2/gh/edublancas/ploomber-workshop/main?urlpath=lab/tree/index.ipynb"> <img src="_static/workshop.svg" alt="Open JupyerLab"> </a>
 </p>
-
 
 **Note:** It may take a few seconds for the notebook to load.
 
