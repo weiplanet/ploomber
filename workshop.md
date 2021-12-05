@@ -1,6 +1,6 @@
 ## Show your support with a star ⭐️ on this repository!
 
-<br>
+---
 
 # Ploomber Workshop Material
 
@@ -11,36 +11,31 @@ This workshop demonstrates how to develop reproducible pipelines using [Ploomber
 To start, [click here](https://mybinder.org/v2/gh/edublancas/ploomber-workshop/main?urlpath=lab/tree/index.ipynb) or on the button below:
 
 <p align="center">
-  <a href="https://mybinder.org/v2/gh/edublancas/ploomber-workshop/main?urlpath=lab/tree/index.ipynb"> <img src="_static/workshop.svg" alt="Open JupyerLab"> </a>
+  <a href="https://mybinder.org/v2/gh/edublancas/ploomber-workshop/main?urlpath=lab/tree/index.ipynb"> <img src="_static/workshop.svg" alt="Start Workshop"> </a>
 </p>
 
 **Note:** It may take a few seconds for the notebook to load.
 
-If you prefer to run things locally, scroll down to the *Running it locally* section.
+Scroll down to the *Running it locally* section if you prefer to run things locally.
 
 ## Workshop level: intermediate
 
 ## Background knowledge
 
-Familiarity with JupyterLab, and a basic knowledge of pandas.
+Familiarity with JupyterLab, and a basic knowledge of pandas and scikit-learn.
 
 ## Workshop content
 
-1. What is Ploomber?
-2. Describing a pipeline using a `pipeline.yaml` file
-3. Describing tasks
-4. Scripts as notebooks, and notebooks as outputs
-5. Scaffolding projects
-6. Adding task dependencies
-7. Pipeline visualization
-8. Coding the analysis
-9. Incremental builds
+1. Introduction
+2. Refactoring a legacy notebook
+3. The `pipeline.yaml` file.
+4. Building the pipeline
+5. Declaring dependencies
+6. Adding a new task
+7. Incremental builds
+8. Execution in the cloud
 
 [Documentation](https://ploomber.readthedocs.io/en/latest/get-started/index.html)
-
-## Format
-
-1. 60-minute session
 
 ## Running it locally (with conda)
 
