@@ -202,7 +202,8 @@ class Placeholder(abc.AbstractPlaceholder):
 
         passed = set(params.keys())
 
-        missing = self.variables - passed
+        missing = self.variables - passed - set(
+            self._template.environment.globals)
         extra = passed - self.variables - optional
 
         # FIXME: self.variables should also be updated on hot_reload
@@ -284,9 +285,11 @@ def _init_template(raw, loader_init):
     object
     """
     if loader_init is None:
-        return Template(raw,
-                        undefined=StrictUndefined,
-                        extensions=(extensions.RaiseExtension, ))
+        template = Template(raw,
+                            undefined=StrictUndefined,
+                            extensions=(extensions.RaiseExtension, ))
+        _add_globals(template.environment)
+        return template
     else:
         if loader_init['class'] == 'FileSystemLoader':
             loader = FileSystemLoader(**loader_init['kwargs'])
@@ -300,7 +303,18 @@ def _init_template(raw, loader_init):
         env = Environment(loader=loader,
                           undefined=StrictUndefined,
                           extensions=(extensions.RaiseExtension, ))
+        _add_globals(env)
+
         return env.from_string(raw)
+
+
+def _add_globals(env):
+    env.globals['get_key'] = _get_key
+
+
+def _get_key(path, key):
+    import json
+    return json.loads(Path(path).read_text())[key]
 
 
 def _get_package_name(loader):

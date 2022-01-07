@@ -1,11 +1,13 @@
+import json
 from sqlite3 import connect
 from pathlib import Path
 from unittest.mock import Mock
 
 from ploomber import DAG
-from ploomber.tasks import SQLDump, SQLTransfer, SQLScript
+from ploomber.tasks import SQLDump, SQLTransfer, SQLScript, PythonCallable
 from ploomber.products import File, SQLiteRelation
 from ploomber.clients import SQLAlchemyClient, DBAPIClient
+from ploomber.executors import Serial
 from ploomber import io
 
 import pytest
@@ -180,6 +182,55 @@ def test_can_dump_sqlite_to_parquet(tmp_directory):
 
     # make sure they are the same
     assert dump.equals(db)
+
+
+# FIXME: add tests to check that Placeholders init from raw str, or a loader
+# have the custom globals
+def test_custom_jinja_env_globals(tmp_directory):
+    tmp = Path(tmp_directory)
+
+    # create a db
+    conn = connect(str(tmp / "database.db"))
+    client = SQLAlchemyClient('sqlite:///{}'.format(tmp / "database.db"))
+
+    # make some data and save it in the db
+    df = pd.DataFrame({'x': range(10)})
+    df.to_sql('numbers', conn)
+
+    # create the task and run it
+    dag = DAG(executor=Serial(build_in_subprocess=False))
+
+    t1 = SQLDump('SELECT * FROM numbers',
+                 File('numbers.parquet'),
+                 dag,
+                 name='numbers',
+                 client=client,
+                 chunksize=None,
+                 io_handler=io.ParquetIO)
+
+    def get_even(product, upstream):
+        numbers = list(pd.read_parquet(upstream['numbers']).x)
+        even = [n for n in numbers if n % 2 == 0]
+        Path(product).write_text(json.dumps(dict(even=even)))
+
+    t2 = PythonCallable(get_even, File('even.json'), dag, name='even')
+
+    t3 = SQLDump("""
+        -- {{upstream}}
+    SELECT * FROM numbers WHERE x NOT IN ([[get_key(upstream["even"], "even") | join(", ") ]])
+""",
+                 File('odd.parquet'),
+                 dag,
+                 name='odd',
+                 client=client,
+                 chunksize=None,
+                 io_handler=io.ParquetIO)
+
+    t1 >> t2 >> t3
+
+    dag.build()
+
+    assert list(pd.read_parquet('odd.parquet').x) == [1, 3, 5, 7, 9]
 
 
 def test_can_dump_postgres(tmp_directory, pg_client_and_schema):
