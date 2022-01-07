@@ -1,6 +1,8 @@
 from pathlib import Path
 from io import StringIO
 
+from jinja2 import Template
+
 from ploomber.tasks.abc import Task
 from ploomber.tasks.mixins import ClientMixin
 from ploomber.sources import (SQLScriptSource, SQLQuerySource, FileSource)
@@ -155,14 +157,14 @@ class SQLDump(io.FileLoaderMixin, ClientMixin, Task):
         return SQLQuerySource(source, **kwargs)
 
     def run(self):
-        from jinja2 import Template
-        # from IPython import embed
-        # embed()
+
+        # render runtime parameters
         template = Template(str(self.source),
                             variable_start_string='[[',
                             variable_end_string=']]')
         _add_globals(template.environment)
         source_code = template.render(upstream=self.params.get('upstream'))
+
         path = Path(str(self.params['product']))
         handler = self.io_handler(path, chunked=bool(self.chunksize))
 

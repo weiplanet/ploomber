@@ -1,3 +1,4 @@
+import json
 from collections.abc import Mapping
 import logging
 from pathlib import Path
@@ -201,9 +202,9 @@ class Placeholder(abc.AbstractPlaceholder):
         optional = set(optional)
 
         passed = set(params.keys())
+        available = passed | set(self._template.environment.globals)
 
-        missing = self.variables - passed - set(
-            self._template.environment.globals)
+        missing = self.variables - available
         extra = passed - self.variables - optional
 
         # FIXME: self.variables should also be updated on hot_reload
@@ -309,11 +310,12 @@ def _init_template(raw, loader_init):
 
 
 def _add_globals(env):
+    """Update jinja2.Template.environment to add utility globals
+    """
     env.globals['get_key'] = _get_key
 
 
 def _get_key(path, key):
-    import json
     return json.loads(Path(path).read_text())[key]
 
 
