@@ -217,7 +217,8 @@ def test_custom_jinja_env_globals(tmp_directory):
 
     t3 = SQLDump("""
         -- {{upstream}}
-    SELECT * FROM numbers WHERE x NOT IN ([[get_key(upstream["even"], "even") | join(", ") ]])
+    SELECT * FROM numbers WHERE x
+    NOT IN ([[get_key(upstream["even"], "even") | join(", ") ]])
 """,
                  File('odd.parquet'),
                  dag,
