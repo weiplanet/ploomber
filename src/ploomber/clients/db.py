@@ -57,6 +57,7 @@ class DBAPIClient(Client):
     >>> import sqlite3
     >>> client = DBAPIClient(sqlite3.connect, dict(database='my.db'))
     """
+
     def __init__(self, connect_fn, connect_kwargs, split_source=None):
         super().__init__()
         self.connect_fn = connect_fn
@@ -72,6 +73,7 @@ class DBAPIClient(Client):
         """
         # if there isn't an open connection, open one...
         if self._connection is None:
+            print(f'opening connection {self}')
             self._connection = self.connect_fn(**self.connect_kwargs)
 
         return self._connection
@@ -159,6 +161,7 @@ class SQLAlchemyClient(Client):
         # any cursor from that connection will fail
         # doing: engine.raw_connection().cursor().execute('') fails!
         if self._connection is None:
+            print(f'opening connection {self}')
             self._connection = self.engine.raw_connection()
 
         # if a task or product calls client.connection.close(), we have to
