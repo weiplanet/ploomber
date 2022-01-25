@@ -216,7 +216,7 @@ def build_in_subprocess(task, build_kwargs, reports_all):
             if 'An attempt has been made to start a new process' in str(e):
                 # this is most likely due to child processes created with
                 # spawn (mac/windows) outside if __name__ == '__main__'
-                raise RuntimeError(f'Press ctrl + c to exit. '
+                raise RuntimeError('Press ctrl + c to exit. '
                                    'For help solving this, go to: '
                                    'https://ploomber.io/h/mp') from e
             else:
